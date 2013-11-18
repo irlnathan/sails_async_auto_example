@@ -29,7 +29,7 @@ var async = require('async'),
 				posts: function (cb) {
 					Blog.find()
 						.where({ isPublished: 1 })
-						.limit(3)
+						.limit(5)
 						.sort('createdAt DESC')
 						.exec(cb);
 				},
@@ -55,7 +55,7 @@ var async = require('async'),
 
 					// Get comments that whose `post_id` is equal to 
 					// the id of one of the posts we found earlier
-					Comment.count()
+					Comment.find()
 						.where({ post_id: posts })
 						.exec(cb);
 				}]
@@ -70,6 +70,7 @@ var async = require('async'),
 
 				var posts = async_data.posts;
 				var comments = async_data.comments;
+
 				var otherThings = async_data.otherThings;
 
 				// Fold the comments into the appropriate post
@@ -78,11 +79,12 @@ var async = require('async'),
 					var theseComments =
 						_.where(comments, { post_id: post.id });
 					post.comments = theseComments;
+
 				});
 
 				// Show a view using our data
-				res.view({
-					layout: 'homeLayout',
+				res.json({
+					// layout: 'homeLayout',
 					posts: posts,
 					otherThings: otherThings
 				});
